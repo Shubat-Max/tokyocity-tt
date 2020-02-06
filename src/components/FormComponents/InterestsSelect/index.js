@@ -18,7 +18,11 @@ const InterestsSelect = ({ tag }) => {
   const [isFocused, setFocused] = React.useState(false);
 
   return (
-    <Select>
+    <Select
+      onMouseLeave={() => {
+        setFocused(false);
+      }}
+    >
       <Control>
         <Placeholder visible={placeholderVisible}>Interests</Placeholder>
         <SelectInput
@@ -26,9 +30,9 @@ const InterestsSelect = ({ tag }) => {
             setFocused(true);
             setPlaceholderVisibility(false);
           }}
+          onClick={() => setFocused(true)}
           onBlur={() => {
             value === "" && setPlaceholderVisibility(true);
-            setFocused(false);
           }}
           onChange={e => {
             setValue(e.target.value);
@@ -43,12 +47,16 @@ const InterestsSelect = ({ tag }) => {
           {interests
             .filter(
               option =>
-                option.toLowerCase().substring(0, value.length) ===
+                option.value.toLowerCase().substring(0, value.length) ===
                 value.toLowerCase()
             )
             .map((option, i) => (
-              <Option key={i} onClick={() => setValue(option)}>
-                {option}
+              <Option key={i} onClick={() => {
+                setValue(option.value);
+                setFocused(false);
+                dispatch(changeInputValue(tag, option.value));
+              }}>
+                {option.value}
               </Option>
             ))}
         </Options>
