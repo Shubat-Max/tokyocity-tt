@@ -25,3 +25,54 @@ export const Item = styled.div`
     background: lightgray;
   }
 `;
+
+// {/*{!namesModule.loading && namesModule.loaded && namesModule.names &&*/}
+// {/*<Tooltip isFocused={isFocused} value={value}>*/}
+// {/*  { namesModule.names*/}
+// {/*    .map((item, index) => (*/}
+// {/*      <Item*/}
+// {/*        key={index}*/}
+// {/*        onClick={() => {*/}
+// {/*          setValue(item.value);*/}
+// {/*          setFocus(false);*/}
+// {/*          dispatch(changeInputValue(tag, item.value));*/}
+// {/*        }}*/}
+// {/*      >*/}
+// {/*        {item.value}*/}
+// {/*      </Item>*/}
+// {/*    ))}*/}
+// {/*</Tooltip>*/}
+// {/*}*/}
+
+export const Suggestions = styled.div`
+  margin-top: 5px;
+  position: relative;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 120%;
+  height: 15px;
+`;
+
+export const Option = styled.span`
+  text-decoration: underline dashed;
+  color: rgba(0, 54, 188, 0.8);
+  cursor: pointer;
+  height: 15px;
+
+  & + & {
+    margin: 0 0 0 10px;
+  }
+
+  &:hover {
+    color: rgb(0, 188, 158);
+  }
+`;
+
+export const SuggestionLoader = styled.img`
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 15px;
+  width: 15px;
+`;

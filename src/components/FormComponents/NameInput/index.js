@@ -1,12 +1,14 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Tooltip, Item } from "./NameInput.sc";
+import { Option,SuggestionLoader,Suggestions } from "./NameInput.sc";
+import RollingLoader from "./Rolling-0.7s-200px1.svg";
 import { Wrapper, Control, Placeholder, Input, Hint } from "../UserForm.sc";
 import { changeInputValue } from "../../../actions/userInfoForm";
+import { load5AlikeNames } from "../../../actions/names";
 
 export const NameInput = ({ tag }) => {
   const dispatch = useDispatch();
-  const names = useSelector(state => state.namesModule.names);
+  const namesModule = useSelector(state => state.namesModule);
   const inputConfig = useSelector(state => state.formModule.form[tag]);
 
   const [value, setValue] = React.useState(
@@ -21,6 +23,7 @@ export const NameInput = ({ tag }) => {
   const [isRequired] = React.useState(
     inputConfig ? (inputConfig.required ? inputConfig.required : false) : false
   );
+  const [isSuggestionDisplayed, setSuggestionDisplay] = React.useState(false);
 
   return (
     <Wrapper>
@@ -38,7 +41,9 @@ export const NameInput = ({ tag }) => {
           }}
           onChange={e => {
             setValue(e.target.value);
+            setSuggestionDisplay(true);
             dispatch(changeInputValue(tag, e.target.value));
+            dispatch(load5AlikeNames(e.target.value));
             setValid(!!e.target.value);
           }}
           value={value}
@@ -49,23 +54,30 @@ export const NameInput = ({ tag }) => {
         />
       </Control>
 
-      <Tooltip isFocused={isFocused} value={value}>
-        {names
-          .filter(item => item.includes(value))
-          .slice(0, 5)
-          .map((item, index) => (
-            <Item
-              key={index}
-              onClick={() => {
-                setValue(item);
-                setFocus(false);
-                dispatch(changeInputValue(tag, item));
-              }}
-            >
-              {item}
-            </Item>
-          ))}
-      </Tooltip>
+      {(namesModule.loading ||
+        (namesModule.names &&
+          namesModule.names.length > 1 &&
+          isSuggestionDisplayed)) && (
+        <Suggestions>
+          {namesModule.loading && (
+            <SuggestionLoader src={RollingLoader} alt="Tooltip loader" />
+          )}
+
+          {namesModule.loaded &&
+            namesModule.names.map((item, index) => (
+              <Option
+                key={index}
+                onClick={() => {
+                  setValue(item.value);
+                  dispatch(changeInputValue(tag, item.value));
+                  setSuggestionDisplay(false);
+                }}
+              >
+                {item.value}
+              </Option>
+            ))}
+        </Suggestions>
+      )}
 
       {isTouched && !isFocused && !value && isRequired && (
         <Hint>* Required</Hint>
@@ -73,5 +85,7 @@ export const NameInput = ({ tag }) => {
     </Wrapper>
   );
 };
+
+
 
 export default NameInput;

@@ -4,7 +4,7 @@ import { logger } from "redux-logger";
 import createSagaMiddleware from "redux-saga";
 import createRootReducer from "../reducers";
 import { watchLoadInterests } from "../sagas/interests";
-import { watchLoadNames } from "../sagas/names";
+import { watchLoadNames, watchLoad5AlikeNames } from "../sagas/names";
 
 const configureStore = (initialState = {}) => {
   const sagaMiddleware = createSagaMiddleware();
@@ -16,6 +16,7 @@ const configureStore = (initialState = {}) => {
 
   sagaMiddleware.run(watchLoadNames);
   sagaMiddleware.run(watchLoadInterests);
+  sagaMiddleware.run(watchLoad5AlikeNames);
 
   return store;
 };
